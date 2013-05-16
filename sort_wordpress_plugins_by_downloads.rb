@@ -20,7 +20,7 @@ def get_list_from_grep_result(file)
   File.open(file, 'r') do |file_handle|
     file_handle.each_line do |line|
       next if line =~ /Binary file .* matches/
-      name = line.scan(/^([^\/]+)[^:]+:\s/).flatten[0]
+      name = line.scan(/^([^\/\s<>]+)\/[^\s:]+?:\s?/).flatten[0]
       next if name.nil? or name.empty?
       name.strip!
       names << name unless names.include?(name)
