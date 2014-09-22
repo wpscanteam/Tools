@@ -4,13 +4,12 @@
 require 'open-uri'
 require 'net/http'
 
-
 def outputinfo(plugin)
 
-   url = "http://plugins.svn.wordpress.org/"+plugin+"/trunk/readme.txt"
+   url = "http://plugins.svn.wordpress.org/#{plugin}/trunk/readme.txt"
    res = Net::HTTP.get_response(URI.parse(url.to_s))
 
-   if res.code == "200"
+   if res.code == '200'
       f = open(url)
 
       puts "URL    : #{url}"
