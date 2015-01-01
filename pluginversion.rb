@@ -12,14 +12,27 @@ def outputinfo(plugin)
    if res.code == '200'
       f = open(url)
 
-      puts "URL    : #{url}"
-      puts "Plugin : #{plugin}"
+      version  = ""
+      tested   = ""
+      requires = ""
 
-      regex = /[S|s]table tag: ([\d\.]{1,10})/
+      regex1 = /[S|s]table tag: (.*)/
+      regex2 = /[T|t]ested up to: (.*)/
+      regex3 = /[R|r]equires at least: (.*)/
+
       f.each_line do |line|
-         puts "Version: #{regex.match(line)[1]}" if line =~ regex
+         version  = regex1.match(line)[1] if line =~ regex1
+         tested   = regex2.match(line)[1] if line =~ regex2
+         requires = regex3.match(line)[1] if line =~ regex3
       end
-      puts "Date   : #{f.last_modified.strftime("%Y-%m-%d")}"
+
+      puts "URL         : #{url}"
+      puts "Plugin      : #{plugin}"
+      puts "Version     : #{version}"
+      puts "Requires WP : #{requires}"
+      puts "Tested up to: #{tested}"
+      puts "Last update : #{f.last_modified.strftime("%Y-%m-%d")}"
+
    else
       puts "No plugin found"
    end
