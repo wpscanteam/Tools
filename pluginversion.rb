@@ -6,29 +6,31 @@ require 'net/http'
 
 def outputinfo(plugin)
 
-  # Possible readme filenames
-  readme = ["readme.txt", "README.txt", "README.TXT", "Readme.txt", "ReadMe.txt"]
-  i = 0
+  # Get the correct readme filename
+  readme_file  = ""
+  regex_readme = /href=\"(.+)\"\>readme.txt/i
 
-  # Try to find a readme file
-  while i < readme.count do
-    url = "http://plugins.svn.wordpress.org/#{plugin}/trunk/#{readme[i]}"
-    res = Net::HTTP.get_response(URI.parse(url.to_s))
-    break if res.code == '200' # exit loop when a file is found
-    i += 1
-  end
+  url = "http://plugins.svn.wordpress.org/#{plugin}/trunk/"
+  res = Net::HTTP.get_response(URI.parse(url.to_s))
 
   # Output data if a readme file is found.
   if res.code == '200'
+    f = open(url)
+    f.each_line do |line|
+      readme_file = regex_readme.match(line)[1] if line =~ regex_readme
+    end
+
+    url = "http://plugins.svn.wordpress.org/#{plugin}/trunk/#{readme_file}"
+    res = Net::HTTP.get_response(URI.parse(url.to_s))
     f = open(url)
 
     version  = ""
     tested   = ""
     requires = ""
 
-    regex1 = /[S|s]table tag: (.*)/
-    regex2 = /[T|t]ested up to: (.*)/
-    regex3 = /[R|r]equires at least: (.*)/
+    regex1 = /stable tag:\s*(.+)/i
+    regex2 = /tested up to:\s*(.+)/i
+    regex3 = /requires at least:\s*(.+)/i
 
     f.each_line do |line|
       version  = regex1.match(line)[1] if line =~ regex1
@@ -43,10 +45,10 @@ def outputinfo(plugin)
     puts "Tested up to: #{tested}"
     puts "Last update : #{f.last_modified.strftime("%Y-%m-%d")}"
 
-  else
-    puts "No plugin found"
-   end
-end
+    else
+      puts "No plugin found"
+    end
+  end
 
 if ARGV[0]
    outputinfo(ARGV[0])
