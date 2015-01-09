@@ -5,9 +5,8 @@ require 'open-uri'
 require 'net/http'
 
 def outputinfo(plugin)
-
   # Get the correct readme filename
-  readme_file  = ""
+  readme_file  = ''
   regex_readme = /href=\"(.+)\"\>readme.txt/i
 
   url = "http://plugins.svn.wordpress.org/#{plugin}/trunk/"
@@ -21,12 +20,12 @@ def outputinfo(plugin)
     end
 
     url = "http://plugins.svn.wordpress.org/#{plugin}/trunk/#{readme_file}"
-    res = Net::HTTP.get_response(URI.parse(url.to_s))
+    # res = Net::HTTP.get_response(URI.parse(url.to_s))
     f = open(url)
 
-    version  = ""
-    tested   = ""
-    requires = ""
+    version  = ''
+    tested   = ''
+    requires = ''
 
     regex1 = /stable tag:\s*(.+)/i
     regex2 = /tested up to:\s*(.+)/i
@@ -43,16 +42,15 @@ def outputinfo(plugin)
     puts "Version     : #{version}"
     puts "Requires WP : #{requires}"
     puts "Tested up to: #{tested}"
-    puts "Last update : #{f.last_modified.strftime("%Y-%m-%d")}"
+    puts "Last update : #{f.last_modified.strftime('%Y-%m-%d')}"
 
-    else
-      puts "No plugin found"
-    end
+  else
+    puts 'No plugin found'
   end
-
-if ARGV[0]
-   outputinfo(ARGV[0])
-else 
-   puts "No argument supplied"
 end
 
+if ARGV[0]
+  outputinfo(ARGV[0])
+else
+  puts 'No argument supplied'
+end

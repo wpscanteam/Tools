@@ -20,8 +20,8 @@ def get_list_from_grep_result(file)
   File.open(file, 'r') do |file_handle|
     file_handle.each_line do |line|
       next if line =~ /Binary file .* matches/
-      name = line.scan(/^([^\/\s<>]+)\/[^\s:]+?:\s?/).flatten[0]
-      next if name.nil? or name.empty?
+      name = line.scan(%r{^([^\/\s<>]+)\/[^\s:]+?:\s?}).flatten[0]
+      next if name.nil? || name.empty?
       name.strip!
       names << name unless names.include?(name)
     end
@@ -45,5 +45,5 @@ plugins.each do |p|
   puts "Plugin: #{p}, Downloads: #{downloads}"
   hash[p] = downloads.to_i
 end
-sorted = hash.sort_by{|k,v| v}.reverse
+sorted = hash.sort_by { |k,v| v }.reverse
 write_list('output.txt', sorted)
